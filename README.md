@@ -58,4 +58,7 @@ webViewLoading.setDestory();
 |  getWebViewClient()| 获取当前WebViewClient方法 |
 |--|--|
 |  getWebChromeClient()| 获取当前WebChromeClient方法 |
+
+
+
 详细使用效果等可以参考博文WebLoading开源库，支持https访问
