@@ -6,42 +6,70 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.net.http.SslError;
+import android.os.Build;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.webkit.GeolocationPermissions;
 import android.webkit.SslErrorHandler;
+import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
+import com.annimon.stream.Collectors;
+import com.annimon.stream.Stream;
+import com.annimon.stream.function.Predicate;
+
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * @Package: com.tobey.webviewlibrary
  * @ClassName: WebViewLoading
  * @Author: Tobey_r1
  * @CreateDate: 2021/3/21 15:42
- * @Description: java类作用描述
+ * @Description: 封装webview
  * @UpdateUser: 更新者
  * @UpdateDate: 2021/3/21 15:42
- * @UpdateRemark: 更新说明
+ * @UpdateRemark:
  * @Version: 1.0
  */
-public class WebViewLoading  extends CoordinatorLayout {
+public class WebViewLoading  extends RelativeLayout {
 
     Context context;
     ProgressBar progressBar;
     WebView webView;
+    private static String currentUrl;
+    private static String javascript = "";
+    private static ArrayList<String> js = new ArrayList<>();
+    List<String> list;
 
-
+    public WebViewLoading(@NonNull Context context) {
+        super(context);
+        this.context = context;
+        initView(context);
+    }
 
     public WebViewLoading(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
+        this.context = context;
+        initView(context);
+    }
+
+    public WebViewLoading(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
         this.context = context;
         initView(context);
     }
@@ -63,12 +91,11 @@ public class WebViewLoading  extends CoordinatorLayout {
     }
 
     /**
-     * 进度条颜色设置
+     * 进度条加载颜色设置
      * @param drawable 渲染
      */
     public void setProgressColor(Drawable drawable){
        progressBar.setProgressDrawable(drawable);
-
     }
 
     private void intClient() {
@@ -92,15 +119,12 @@ public class WebViewLoading  extends CoordinatorLayout {
         }
 
         @Override
-        public void onGeolocationPermissionsHidePrompt() {
-            super.onGeolocationPermissionsHidePrompt();
+        public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
+            Log.e("文件操作",fileChooserParams.toString());
+
+            return true;
         }
 
-        @Override
-        public void onGeolocationPermissionsShowPrompt(final String origin, final GeolocationPermissions.Callback callback) {
-            callback.invoke(origin, true, false);//注意个函数，第二个参数就是是否同意定位权限，第三个是是否希望内核记住
-            super.onGeolocationPermissionsShowPrompt(origin, callback);
-        }
 
         @Override
         public boolean onCreateWindow(WebView view, boolean isDialog, boolean isUserGesture, Message resultMsg) {
@@ -113,10 +137,22 @@ public class WebViewLoading  extends CoordinatorLayout {
 
     WebViewClient webViewClient = new WebViewClient(){
 
+        @Override
+        public void onLoadResource(WebView view, String url) {
+            super.onLoadResource(view, url);
+           if (!javascript.equals("")){
+               view.loadUrl(javascript);
+           }
+            /*if (js.size()!=0){
+                view.loadUrl(javascript);
+            }*/
+
+
+    }
+
         /**
          * 多页面在同一个WebView中打开，就是不新建activity或者调用系统浏览器打开
          */
-        @SuppressLint("RestrictedApi")
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
             view.loadUrl(url);
@@ -130,7 +166,17 @@ public class WebViewLoading  extends CoordinatorLayout {
     };
 
 
-
+    /**
+     * 提供页面返回方法
+     * @param  activity 活动
+     */
+    public void goback(Activity activity){
+        if (webView.canGoBack()&&(!webView.getUrl().equals(currentUrl))){
+            webView.goBack();
+        }else {
+            activity.finish();
+        }
+    }
 
     /**
      * 提供自定义WebChromeClient接口
@@ -152,13 +198,54 @@ public class WebViewLoading  extends CoordinatorLayout {
      * 去除网页元素
      * @param divName 要去除的元素id
      */
-    public void removeDiv(WebViewClient webViewClient,String divName){
-        webViewClient.onLoadResource(webView,WebViewSettings.removeDiv(divName));
+    public void removeDiv(String divName){
+        javascript = "javascript:function removeDiv() {" +
+                "var divs = document.getElementsByClassName('"+divName+"');" +
+                "var firstdiv = divs[0];" +
+                "firstdiv.remove();" + "}"+
+                "javascript:removeDiv();";
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public  List<String> getData(){
 
+        list = Stream.of(list).filter(new Predicate<String>() {
+            @Override
+            public boolean test(String value) {
+                return !"".equals(value);
+            }
+        }).collect(Collectors.toList());
 
+        return list;
+    }
 
+/*    *//**
+     * 去除网页元素
+     * @param divName 要去除的元素对象
+     *//*
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    public void removeDiv(List divName){
+        list = divName;
+        getData();
+        int size = list.size();
+        int i =0;
+        String s ="";
+        for (String jsItem: list){
+            i++;
+            js.add("var divs"+i+" = document.getElementsByClassName('"+jsItem+"')[0];"+
+                    "divs"+i+".remove();");
+            s+= js.get(i-1);
+        }
+        javascript = "javascript:function removeDiv() {" +
+                "var arr = "+list+";"+
+                "for(var j=0;j<="+size+";j++){"+
+                "var child = document.getElementsByClassName('arr[j]')[0];"+
+                "child.remove();"+"}"+
+                "}"+"javascript:removeDiv();";
+
+        System.out.println("拼接数据"+javascript);
+
+    }*/
 
     /**
      * 页面销毁时调用此方法
@@ -193,6 +280,7 @@ public class WebViewLoading  extends CoordinatorLayout {
      * @param url 链接
      */
     public void setUrl(String url){
+        currentUrl =url;
           webView.loadUrl(url);
     }
 
@@ -201,6 +289,7 @@ public class WebViewLoading  extends CoordinatorLayout {
      * @param url 链接
      */
     public void setUrl(Uri url){
+        currentUrl =url.toString();
         webView.loadUrl(url.toString());
     }
 

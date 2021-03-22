@@ -1,11 +1,20 @@
 package com.tobey.webviewlibrary;
 
 import android.app.Activity;
+import android.os.Build;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ProgressBar;
+
+import androidx.annotation.RequiresApi;
+
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 
 /**
  * @Package: com.tobey.webviewlibrary
@@ -97,7 +106,8 @@ public class WebViewSettings {
         String javascript = "javascript:function removeDiv() {" +
                 "var bars = document.getElementsByClassName('"+div+"');" +
                 "}";
-       return javascript;
-      //  view.loadUrl("javascript:hideBanner();");
+        return javascript;
     }
+
+
 }
