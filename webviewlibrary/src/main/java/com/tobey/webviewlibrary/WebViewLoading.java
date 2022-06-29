@@ -55,6 +55,7 @@ public class WebViewLoading  extends RelativeLayout {
     private static String javascript = "";
     private static ArrayList<String> js = new ArrayList<>();
     List<String> list;
+    String webTitle = "";
 
     public WebViewLoading(@NonNull Context context) {
         super(context);
@@ -119,6 +120,12 @@ public class WebViewLoading  extends RelativeLayout {
         }
 
         @Override
+        public void onReceivedTitle(WebView view, String title) {
+            super.onReceivedTitle(view, title);
+            webTitle = title;
+        }
+
+        @Override
         public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
             Log.e("文件操作",fileChooserParams.toString());
 
@@ -143,9 +150,6 @@ public class WebViewLoading  extends RelativeLayout {
            if (!javascript.equals("")){
                view.loadUrl(javascript);
            }
-            /*if (js.size()!=0){
-                view.loadUrl(javascript);
-            }*/
 
 
     }
@@ -184,6 +188,12 @@ public class WebViewLoading  extends RelativeLayout {
      */
     public void setCromeClient(WebChromeClient webChromeClient){
         webView.setWebChromeClient(webChromeClient);
+    }
+
+    /**
+     * 获取网页标题 */
+    public String getWebTitle(){
+        return webTitle;
     }
 
     /**

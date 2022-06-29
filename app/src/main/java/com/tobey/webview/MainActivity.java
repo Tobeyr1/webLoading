@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -37,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
         list.add("");
       //  webViewLoading.removeDiv(list);
        webViewLoading.removeDiv("csdn-toolbar");
-        webViewLoading.setUrl("https://218.108.196.46:8443/zjystj//huiming/html/caseBase.html");
+        webViewLoading.setUrl("https://y.music.163.com/m/at/62abf4e67987b3daca41e8f0?market=banner");
+        Log.e("标题",webViewLoading.getWebTitle());
     //   webViewLoading.setProgressColor(getResources().getDrawable(R.drawable.pg));
      //   webViewLoading.setProgressColor(getResources().getDrawable(R.color.colorAccent));
         Button button = findViewById(R.id.button);
