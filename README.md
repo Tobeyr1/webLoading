@@ -1,4 +1,4 @@
-# webLoading
+# webLoading [![](https://jitpack.io/v/Tobeyr1/webLoading.svg)](https://jitpack.io/#Tobeyr1/webLoading)
 ---------------------------
 **WebView is the encapsulation of Marshal WebView and progress implementation, loading all kinds of web pages and the corresponding progress bar prompt**
 
@@ -16,7 +16,7 @@ allprojects {
 **Then add the dependency:**
 ```java
 dependencies {
-	        implementation 'com.github.Tobeyr1:webLoading:1.0.0'
+	        implementation 'com.github.Tobeyr1:webLoading:1.0.1'
 	}
 ```
 # Basic Usage
@@ -58,7 +58,7 @@ webViewLoading.setDestory();
 |  getWebViewClient()| 获取当前WebViewClient方法 |
 |--|--|
 |  getWebChromeClient()| 获取当前WebChromeClient方法 |
-
-
+|--|--|
+|  getTitle(title ->{})| 获取当前网页标题 |
 
 详细使用效果等可以参考博文[WebLoading开源库，支持https访问](https://blog.csdn.net/Tobey_r1/article/details/115096272)
