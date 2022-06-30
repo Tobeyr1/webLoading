@@ -39,7 +39,7 @@ webViewLoading.setPause();
 //页面恢复
 webViewLoading.setResume();
 //页面销毁
-webViewLoading.setDestory();
+webViewLoading.setDestroy();
 ```
 **External methods**
 
@@ -49,9 +49,9 @@ webViewLoading.setDestory();
 |--|--|
 |  goback(Activity activity)| 实现网页后退及返回到上一个页面方法 |
 |--|--|
-|  setCromeClient(WebChromeClient Client)| 提供自定义WebChromeClient方法|
+|  setChromeClient()(WebChromeClient Client)| 提供自定义WebChromeClient方法|
 |--|--|
-|  setCromeClient(WebViewClient client)| 提高自定义WebViewClient方法 |
+|  setChromeClient()(WebViewClient client)| 提高自定义WebViewClient方法 |
 |--|--|
 |  getWebView()| 获取当前webview实例|
 |--|--|
